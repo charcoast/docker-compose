@@ -1,0 +1,33 @@
+version: '3'
+services:
+  storage-sensor-data:
+    build: ./storage-sensor-data
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/storage-sensor-data
+    networks:
+      - aplantica-net
+  grafana:
+    image: "grafana/grafana"
+    user: "0"
+    ports:
+      - "2000:3000"
+    volumes:
+      - /var/lib/grafana:/var/lib/grafana
+    networks:
+      - aplantica-net
+    environment:
+      GF_INSTALL_PLUGINS: grafana-influxdb-flux-datasource
+  influx2:
+    image: "quay.io/influxdb/influxdb:2.0.0-beta"
+    user: "0"
+    ports:
+      - "9999:9999"
+    volumes:
+      - /var/lib/influxdb2:/root/.influxdbv2
+    networks:
+      - aplantica-net
+networks:
+  aplantica-net:
+    external: true
